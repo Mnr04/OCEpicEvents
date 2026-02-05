@@ -17,3 +17,5 @@ class User(Base):
 
     role = Column(Enum(UserRole), nullable=False)
 
+    def __repr__(self):
+        return f"<User {self.username} ({self.role.value})>"
