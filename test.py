@@ -6,3 +6,4 @@ try:
     connection.close()
 except Exception as e:
     print(f"Erreur : {e}")
+
