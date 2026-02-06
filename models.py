@@ -19,6 +19,8 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     role = Column(Enum(UserRole), nullable=False)
 
+    clients = relationship("Client", back_populates="commercial_contact")
+
 
 class Client(Base):
     __tablename__ = 'clients'
@@ -28,8 +30,8 @@ class Client(Base):
     email = Column(String, unique=True, nullable=False)
     phone = Column(String, nullable=True)
     company_name = Column(String, nullable=False)
-
     creation_date = Column(DateTime, default=datetime.now)
     last_update = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     commercial_contact_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    commercial_contact = relationship("User", back_populates="clients")
