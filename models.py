@@ -1,14 +1,16 @@
 import enum
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Float, Boolean
 from database import Base
 from datetime import datetime
 from sqlalchemy.orm import relationship
 from database import Base
 
+
 class UserRole(enum.Enum):
     GESTION = "Gestion"
     COMMERCIAL = "Commercial"
     SUPPORT = "Support"
+
 
 class User(Base):
     __tablename__ = 'users'
@@ -20,6 +22,7 @@ class User(Base):
     role = Column(Enum(UserRole), nullable=False)
 
     clients = relationship("Client", back_populates="commercial_contact")
+    contracts = relationship("Contract", back_populates="commercial_contact")
 
 
 class Client(Base):
@@ -35,3 +38,22 @@ class Client(Base):
 
     commercial_contact_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     commercial_contact = relationship("User", back_populates="clients")
+
+
+
+class Contract(Base):
+    __tablename__ = 'contracts'
+
+    id = Column(Integer, primary_key=True)
+    total_amount = Column(Float, nullable=False)
+    remaining_amount = Column(Float, nullable=False)
+    creation_date = Column(DateTime, default=datetime.now)
+    status = Column(Boolean, default=False)
+
+    client_id = Column(Integer, ForeignKey('clients.id'), nullable=False)
+    client = relationship("Client", back_populates="contracts")
+
+    commercial_contact_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    commercial_contact = relationship("User", back_populates="contracts")
+
+
