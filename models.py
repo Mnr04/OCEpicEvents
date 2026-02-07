@@ -39,6 +39,8 @@ class Client(Base):
     commercial_contact_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     commercial_contact = relationship("User", back_populates="clients")
 
+    contracts = relationship("Contract", back_populates="client")
+
 
 
 class Contract(Base):
