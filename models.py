@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Float, Boolean
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Float, Boolean, Text
 from database import Base
 from datetime import datetime
 from sqlalchemy.orm import relationship
@@ -21,8 +21,10 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     role = Column(Enum(UserRole), nullable=False)
 
+    #All relations
     clients = relationship("Client", back_populates="commercial_contact")
     contracts = relationship("Contract", back_populates="commercial_contact")
+    events = relationship("Event", back_populates="support_contact")
 
 
 class Client(Base):
@@ -36,11 +38,12 @@ class Client(Base):
     creation_date = Column(DateTime, default=datetime.now)
     last_update = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
+    #Link to commercial
     commercial_contact_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     commercial_contact = relationship("User", back_populates="clients")
 
+    #relation to contract
     contracts = relationship("Contract", back_populates="client")
-
 
 
 class Contract(Base):
@@ -52,10 +55,34 @@ class Contract(Base):
     creation_date = Column(DateTime, default=datetime.now)
     status = Column(Boolean, default=False)
 
+    # Link to client
     client_id = Column(Integer, ForeignKey('clients.id'), nullable=False)
     client = relationship("Client", back_populates="contracts")
 
+    # Link to commercial
     commercial_contact_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     commercial_contact = relationship("User", back_populates="contracts")
+
+    #relation to event
+    events = relationship("Event", back_populates="contract")
+
+
+class Event(Base):
+    __tablename__ = 'events'
+
+    id = Column(Integer, primary_key=True)
+    event_date_start = Column(DateTime, nullable=False)
+    event_date_end = Column(DateTime, nullable=False)
+    location = Column(String, nullable=True)
+    attendees = Column(Integer, nullable=True)
+    notes = Column(Text, nullable=True)
+
+    #Link to contract
+    contract_id = Column(Integer, ForeignKey('contracts.id'), nullable=False)
+    contract = relationship("Contract", back_populates="events")
+
+    #Link to Support
+    support_contact_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    support_contact = relationship("User", back_populates="events")
 
 
