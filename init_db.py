@@ -1,5 +1,6 @@
 from database import engine, Base, SessionLocal
 from models import User, UserRole
+from utils import hash_password
 
 def init_database():
     Base.metadata.drop_all(engine)
@@ -10,7 +11,7 @@ def init_database():
     admin_user = User(
         username="admin",
         email="admin@epicevents.com",
-        password_hash="admin123",
+        password_hash= hash_password("admin123"),
         role=UserRole.GESTION
     )
 
