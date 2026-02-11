@@ -1,5 +1,5 @@
 from database import engine, Base, SessionLocal
-from models import User, UserRole
+from crm.models.models import User, UserRole
 from utils import hash_password
 
 def init_database():
