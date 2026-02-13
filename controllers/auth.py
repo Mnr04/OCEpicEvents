@@ -5,7 +5,7 @@ from database import SessionLocal
 from utils import verify_password
 import os
 
-SECRET_KEY = "k&1$v18#50$E^4!k5$"
+SECRET_KEY = "k&1$v1k&1$v18#50$E^4!k5$8#50$E^4!k5$k&1$v18#50$E^4!k5$"
 ALGORITHM = "HS256"
 TOKEN_FILE = "session_token.txt"
 
