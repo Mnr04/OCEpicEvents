@@ -28,4 +28,4 @@ def test_create_user():
     assert user_trouve is not None
 
     session.close()
-
+    os.remove(DB_FILE)
