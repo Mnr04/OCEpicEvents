@@ -1,4 +1,4 @@
-from database import engine, Base, SessionLocal
+from database import engine, Base, Session
 from models.models import User, UserRole
 from utils import hash_password
 
@@ -6,7 +6,7 @@ def init_database():
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
-    session = SessionLocal()
+    session = Session()
 
     admin_user = User(
         username="admin",

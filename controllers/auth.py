@@ -1,7 +1,7 @@
 import jwt
 from models.models import User
 import datetime
-from database import SessionLocal
+from database import Session
 from utils import verify_password
 import os
 
@@ -10,7 +10,7 @@ ALGORITHM = "HS256"
 TOKEN_FILE = "session_token.txt"
 
 def login_user(username, password):
-    session = SessionLocal()
+    session = Session()
     user = session.query(User).filter_by(username=username).first()
     session.close()
 
@@ -19,6 +19,7 @@ def login_user(username, password):
 
     payload = {
         "user_id": user.id,
+        "username": user.username,
         "role": user.role.value,
         "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=4)
     }

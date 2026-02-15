@@ -2,6 +2,8 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models.models import Base, User, UserRole
+from database import Session
+from controllers.users import create_user, get_all_users, update_user, delete_user
 
 def test_create_user():
     DB_FILE = "test_temporaire.db"
@@ -29,3 +31,30 @@ def test_create_user():
 
     session.close()
     os.remove(DB_FILE)
+
+
+def test_crud_users():
+    delete_user("test")
+
+    # Create
+    user = create_user("test", "test@epicevents.com", "password123", "Commercial")
+    assert user is True
+
+    # Get ALL
+    tous_les_users = get_all_users()
+    noms = [user.username for user in tous_les_users]
+    assert "test" in noms
+
+    # Update
+    update_user("test", "Support")
+    session = Session()
+    user_modifie = session.query(User).filter_by(username="test").first()
+    assert user_modifie.role.value == "Support"
+    session.close()
+
+    # DELETE
+    delete_user("test")
+    session = Session()
+    user_supprime = session.query(User).filter_by(username="test").first()
+    assert user_supprime is None
+    session.close()

@@ -1,7 +1,7 @@
 import questionary
 import os
-from controllers.auth import login_user, get_logged_user
-
+from controllers.auth import login_user, get_logged_user, TOKEN_FILE
+from views.menus import menu_gestion_utilisateurs
 
 def main():
     print("\n EPIC EVENTS CRM  \n")
@@ -57,7 +57,8 @@ def main():
                 else:
                     print(" Erreur : Identifiant ou mot de passe incorrect.")
 
-
+            elif choix == "Quitter":
+                break
 
 if __name__ == "__main__":
     main()
