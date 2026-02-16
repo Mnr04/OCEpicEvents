@@ -1,5 +1,6 @@
 import questionary
 from controllers.users import create_user, get_all_users, update_user, delete_user
+from views.user_view import display_all_users
 
 def menu_gestion_utilisateurs():
     while True:
@@ -31,10 +32,10 @@ def menu_gestion_utilisateurs():
         elif action == "Voir la liste":
             tous_les_users = get_all_users()
 
-            print("\n--- LISTE DES COLLABORATEURS ---")
-            for utilisateur in tous_les_users:
-                print(f" {utilisateur.username} | Email: {utilisateur.email} | Rôle: {utilisateur.role.value}")
-            print("--------------------------------\n")
+            if tous_les_users:
+                display_all_users(tous_les_users)
+            else:
+                print("Aucun collaborateur trouvé.")
 
         # Update
         elif action == "Modifier un rôle":
