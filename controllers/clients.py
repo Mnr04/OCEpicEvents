@@ -1,4 +1,5 @@
-from models.models import Client, Session
+from models.models import Client
+from database import Session
 from sqlalchemy.exc import IntegrityError
 
 def create_client(nom, email, telephone, entreprise, commercial_id):
@@ -42,6 +43,8 @@ def update_client(nom_client, nouvelle_entreprise, commercial_id_connecte):
         session.commit()
         session.close()
         return True
+    else:
+        print("Client introuvable.")
+        session.close()
+        return False
 
-    session.close()
-    return False
