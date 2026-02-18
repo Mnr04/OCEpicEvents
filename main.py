@@ -23,7 +23,7 @@ def main():
             elif user['role'] == "Commercial":
                 choix = questionary.select(
                     "Menu Principal :",
-                    choices=["Gérer les Clients", "Se déconnecter", "Quitter"]
+                    choices=["Gérer les Clients","Gérer les Contrats", "Se déconnecter", "Quitter"]
                 ).ask()
 
             else:
