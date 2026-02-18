@@ -1,7 +1,7 @@
 import questionary
 import os
 from controllers.auth import login_user, get_logged_user, TOKEN_FILE
-from views.menus import menu_gestion_utilisateurs, menu_gestion_clients
+from views.menus import menu_gestion_utilisateurs, menu_gestion_clients, menu_gestion_contrats
 
 def main():
     print("\n EPIC EVENTS CRM  \n")
@@ -17,7 +17,7 @@ def main():
             if user['role'] == "Gestion":
                 choix = questionary.select(
                     "Menu Principal :",
-                    choices=["Gérer les Collaborateurs", "Se déconnecter", "Quitter"]
+                    choices=["Gérer les Collaborateurs", "Gérer les Contrats", "Se déconnecter", "Quitter"]
                 ).ask()
 
             elif user['role'] == "Commercial":
@@ -38,6 +38,9 @@ def main():
 
             if choix == "Gérer les Clients":
                 menu_gestion_clients(user['user_id'])
+
+            elif choix == "Gérer les Contrats":
+                menu_gestion_contrats(user['role'], user['user_id'])
 
             # Autre options
             elif choix == "Se déconnecter":
