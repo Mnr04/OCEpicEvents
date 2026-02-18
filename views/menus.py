@@ -1,6 +1,7 @@
 import questionary
 from controllers.users import create_user, get_all_users, update_user, delete_user
 from controllers.clients import create_client, get_all_clients, update_client
+from controllers.contracts import create_contract, get_all_contracts, update_contract, delete_contract
 from views.user_view import display_all_users
 
 def menu_gestion_utilisateurs():
@@ -103,6 +104,70 @@ def menu_gestion_clients(user_id):
                 print("Client modifié.")
             else:
                 print("Échec modification")
+
+        elif choix == "Retour":
+            break
+
+def menu_gestion_contrats(user_role, user_id):
+    while True:
+        if user_role == "Gestion":
+            choix_possibles = ["Nouveau Contrat", "Voir les Contrats", "Modifier Contrat", "Supprimer Contrat", "Retour"]
+        elif user_role == "Commercial":
+            choix_possibles = ["Voir les Contrats", "Signer Contrat", "Retour"]
+        else:
+            choix_possibles = ["Voir les Contrats", "Retour"]
+
+        choix = questionary.select(
+            "GESTION CONTRATS :",
+            choices=choix_possibles
+        ).ask()
+
+        # Creation (Gestion)
+        if choix == "Nouveau Contrat":
+            client_id = questionary.text("ID du Client :").ask()
+            total = questionary.text("Montant Total (€) :").ask()
+            reste = questionary.text("Reste à payer (€) :").ask()
+
+            if create_contract(client_id, float(total), float(reste), user_role):
+                print("Contrat créé.")
+            else:
+                print("Erreur création.")
+
+        # Get All (Tout le monde)
+        elif choix == "Voir les Contrats":
+            contrats = get_all_contracts()
+            print("\n--- LISTE DES CONTRATS ---")
+            for contrat in contrats:
+                statut = "SIGNÉ" if contrat.status else "Non signé"
+                print(f"ID: {contrat.id} | Client: {contrat.client_id} | {contrat.total_amount}€ | {statut}")
+            print("--------------------------\n")
+
+        # Update
+        elif choix == "Modifier Contrat":
+            id_contrat = questionary.text("ID du contrat :").ask()
+            nouveau_montant = questionary.text("Nouveau montant :").ask()
+
+            if update_contract(id_contrat, user_role, user_id, nouveau_montant=float(nouveau_montant)):
+                print("Contrat modifié.")
+            else:
+                print("Erreur modification.")
+
+        elif choix == "Signer Contrat":
+            id_contrat = questionary.text("ID du contrat à signer :").ask()
+
+            if update_contract(id_contrat, user_role, user_id, nouveau_statut=True):
+                print("Contrat signé !")
+            else:
+                print("Erreur.")
+
+        # Delete
+        elif choix == "Supprimer Contrat":
+            id_contrat = questionary.text("ID à supprimer :").ask()
+
+            if delete_contract(id_contrat, user_role):
+                print("Contrat supprimé.")
+            else:
+                print("Erreur suppression.")
 
         elif choix == "Retour":
             break
