@@ -1,8 +1,10 @@
 import questionary
 from controllers.users import create_user, get_all_users, update_user, delete_user
 from controllers.clients import create_client, get_all_clients, update_client
-from controllers.contracts import create_contract, get_all_contracts, update_contract, delete_contract
+from controllers.contracts import create_contract, get_all_contracts, update_contract, delete_contract , get_contracts_unsigned, get_contracts_unpaid
 from views.user_view import display_all_users
+from views.client_view import afficher_tableau_clients
+from views.contract_view import afficher_tableau_contrats
 
 def menu_gestion_utilisateurs():
     while True:
@@ -68,6 +70,7 @@ def menu_gestion_utilisateurs():
         elif action == "Retour":
             break
 
+
 def menu_gestion_clients(user_id):
     while True:
         choix = questionary.select(
@@ -90,10 +93,7 @@ def menu_gestion_clients(user_id):
         # Get All clients
         elif choix == "Voir les Clients":
             clients = get_all_clients()
-            print("\n--- LISTE DES CLIENTS ---")
-            for client in clients:
-                print(f"{client.company_name} | Contact: {client.full_name} | Commercial ID: {client.commercial_contact_id}")
-            print("-------------------------\n")
+            afficher_tableau_clients(clients)
 
         # Update clients
         elif choix == "Modifier Client":
@@ -108,14 +108,15 @@ def menu_gestion_clients(user_id):
         elif choix == "Retour":
             break
 
+
 def menu_gestion_contrats(user_role, user_id):
     while True:
         if user_role == "Gestion":
-            choix_possibles = ["Nouveau Contrat", "Voir les Contrats", "Modifier Contrat", "Supprimer Contrat", "Retour"]
+            choix_possibles = ["Nouveau Contrat", "Voir les Contrats", "Contrats : Non signés", "Contrats : Non payés", "Modifier Contrat", "Supprimer Contrat", "Retour"]
         elif user_role == "Commercial":
-            choix_possibles = ["Voir les Contrats", "Signer Contrat", "Retour"]
+            choix_possibles = ["Voir les Contrats", "Contrats : Non signés", "Contrats : Non payés", "Signer Contrat", "Retour"]
         else:
-            choix_possibles = ["Voir les Contrats", "Retour"]
+            choix_possibles = ["Voir les Contrats", "Contrats : Non signés", "Contrats : Non payés", "Retour"]
 
         choix = questionary.select(
             "GESTION CONTRATS :",
@@ -136,11 +137,15 @@ def menu_gestion_contrats(user_role, user_id):
         # Get All (Tout le monde)
         elif choix == "Voir les Contrats":
             contrats = get_all_contracts()
-            print("\n--- LISTE DES CONTRATS ---")
-            for contrat in contrats:
-                statut = "SIGNÉ" if contrat.status else "Non signé"
-                print(f"ID: {contrat.id} | Client: {contrat.client_id} | {contrat.total_amount}€ | {statut}")
-            print("--------------------------\n")
+            afficher_tableau_contrats(contrats)
+
+        elif choix == "Contrats : Non signés":
+            contrats = get_contracts_unsigned()
+            afficher_tableau_contrats(contrats)
+
+        elif choix == "Contrats : Non payés":
+            contrats = get_contracts_unpaid()
+            afficher_tableau_contrats(contrats)
 
         # Update
         elif choix == "Modifier Contrat":
@@ -171,3 +176,4 @@ def menu_gestion_contrats(user_role, user_id):
 
         elif choix == "Retour":
             break
+
