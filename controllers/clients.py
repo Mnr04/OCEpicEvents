@@ -48,3 +48,17 @@ def update_client(nom_client, nouvelle_entreprise, commercial_id_connecte):
         session.close()
         return False
 
+def delete_client(client):
+    session = Session()
+    client = session.query(Client).filter_by(full_name=client).first()
+
+    if client:
+        session.delete(client)
+        session.commit()
+        session.close()
+        return True
+    else:
+        print("Client introuvable.")
+        session.close()
+        return False
+
