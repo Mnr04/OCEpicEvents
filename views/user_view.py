@@ -1,6 +1,11 @@
 from tabulate import tabulate
 
 def display_all_users(users):
+
+    if not users:
+        print("\n Aucun utilisateur à afficher.\n")
+        return
+
     tableau = []
 
     for user in users:
