@@ -90,3 +90,21 @@ def delete_contract(contract_id, user_role):
     print("Contrat introuvable.")
     session.close()
     return False
+
+def get_contracts_unsigned():
+    session = Session()
+    contrats = session.query(Contract).filter_by(status=False).all()
+    session.close()
+    return contrats
+
+def get_contracts_signed():
+    session = Session()
+    contrats = session.query(Contract).filter_by(status=True).all()
+    session.close()
+    return contrats
+
+def get_contracts_unpaid():
+    session = Session()
+    contrats = session.query(Contract).filter(Contract.remaining_amount > 0).all()
+    session.close()
+    return contrats
