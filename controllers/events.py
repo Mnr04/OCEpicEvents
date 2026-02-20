@@ -1,0 +1,96 @@
+from models.models import Event, Contract
+from database import Session
+
+def create_event(contract_id, date_start, date_end, location, attendees, notes, user_role, user_id):
+    if user_role != "Commercial":
+        print("Seul un commercial peut créer un événement.")
+        return False
+
+    session = Session()
+    contrat = session.query(Contract).filter_by(id=contract_id).first()
+
+    if not contrat:
+        print("Contrat introuvable.")
+        session.close()
+        return False
+
+    # On vérifie que ce contrat appartient a nos clients
+    if contrat.commercial_contact_id != user_id:
+        print("Ce contrat n'appartient pas à vos clients.")
+        session.close()
+        return False
+
+    # Verifie que le contrat est signé
+    if contrat.status is False:
+        print("Le contrat n'est pas encore signé.")
+        session.close()
+        return False
+
+    # Create
+    nouveau_event = Event(
+        contract_id=contrat.id,
+        event_date_start=date_start,
+        event_date_end=date_end,
+        location=location,
+        attendees=attendees,
+        notes=notes,
+        support_contact_id=None
+    )
+
+    session.add(nouveau_event)
+    session.commit()
+    session.close()
+    return True
+
+def get_all_events():
+    session = Session()
+    events = session.query(Event).all()
+    session.close()
+    return events
+
+def update_event(event_id, user_role, user_id, nouveau_support_id=None, nouvelles_notes=None):
+    session = Session()
+    event = session.query(Event).filter_by(id=event_id).first()
+
+    if not event:
+        print("Événement introuvable.")
+        session.close()
+        return False
+
+    if user_role == "Gestion":
+        if nouveau_support_id is not None:
+            event.support_contact_id = nouveau_support_id
+            session.commit()
+            session.close()
+            return True
+        else:
+            print("Aucun ID de support fourni.")
+            session.close()
+            return False
+
+    elif user_role == "Support":
+        if event.support_contact_id != user_id:
+            print("Cet événement ne vous est pas assigné.")
+            session.close()
+            return False
+
+        if nouvelles_notes is not None:
+            event.notes = nouvelles_notes
+            session.commit()
+            session.close()
+            return True
+
+    print("Action non autorisée.")
+    session.close()
+    return False
+
+def delete_event(event_id):
+    session = Session()
+    event = session.query(Event).filter_by(id=event_id).first()
+    if event:
+        session.delete(event)
+        session.commit()
+        session.close()
+        return True
+    session.close()
+    return False
