@@ -5,6 +5,8 @@ from controllers.contracts import create_contract, get_all_contracts, update_con
 from views.user_view import display_all_users
 from views.client_view import afficher_tableau_clients
 from views.contract_view import afficher_tableau_contrats
+from controllers.events import create_event, get_all_events, update_event, delete_event
+from views.event_view import afficher_tableau_events
 
 def menu_gestion_utilisateurs():
     while True:
@@ -173,6 +175,62 @@ def menu_gestion_contrats(user_role, user_id):
                 print("Contrat supprimé.")
             else:
                 print("Erreur suppression.")
+
+        elif choix == "Retour":
+            break
+
+def menu_gestion_events(user_role, user_id):
+    while True:
+        if user_role == "Commercial":
+            choix_possibles = ["Voir les Événements", "Nouveau Événement", "Retour"]
+        elif user_role == "Gestion":
+            choix_possibles = ["Voir les Événements", "evenement sans support", "Assigner un Support", "Retour"]
+        elif user_role == "Support":
+            choix_possibles = ["Voir les Événements", "Mes événements", "Modifier mes Événements", "Retour"]
+        else:
+            choix_possibles = ["Voir les Événements", "Retour"]
+
+        choix = questionary.select(
+            "GESTION DES ÉVÉNEMENTS :",
+            choices=choix_possibles
+        ).ask()
+
+        if choix == "Voir les Événements":
+            events = get_all_events()
+            afficher_tableau_events(events)
+
+        # Pour le Commercial
+        elif choix == "Nouveau Événement":
+            contract_id = questionary.text("ID du Contrat :").ask()
+            date_start = questionary.text("Date de début (yyyy-mm-dd) :").ask()
+            date_end = questionary.text("Date de fin (yyyy-mm-dd) :").ask()
+            location = questionary.text("Lieu de l'événement :").ask()
+            attendees = questionary.text("Nombre de participants :").ask()
+            notes = questionary.text("Notes:").ask()
+
+            if create_event(contract_id, date_start, date_end, location, int(attendees), notes, user_role, user_id):
+                print("Événement créé !")
+            else:
+                print("Erreur lors de la création.")
+
+        # Pour la Gestion
+        elif choix == "Assigner un Support":
+            event_id = questionary.text("ID de l'événement :").ask()
+            support_id = questionary.text("ID du Support à assigner :").ask()
+
+            if update_event(event_id, user_role, user_id, nouveau_support_id=int(support_id)):
+                print(" Support assigné avec succès !")
+            else:
+                print(" Erreur d'assignation.")
+
+        elif choix == "Modifier mes Événements":
+            event_id = questionary.text("ID de l'événement à modifier :").ask()
+            nouvelles_notes = questionary.text("Nouvelles notes :").ask()
+
+            if update_event(event_id, user_role, user_id, nouvelles_notes=nouvelles_notes):
+                print(" Événement mis à jour !")
+            else:
+                print(" Erreur de mise à jour.")
 
         elif choix == "Retour":
             break

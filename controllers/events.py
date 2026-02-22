@@ -94,3 +94,15 @@ def delete_event(event_id):
         return True
     session.close()
     return False
+
+def get_events_without_support():
+    session = Session()
+    events = session.query(Event).filter_by(support_contact_id=None).all()
+    session.close()
+    return events
+
+def get_my_events(user_id):
+    session = Session()
+    events = session.query(Event).filter_by(support_contact_id=user_id).all()
+    session.close()
+    return events
