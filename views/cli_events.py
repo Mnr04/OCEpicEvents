@@ -5,9 +5,11 @@ from controllers.events import (
 )
 from views.event_view import afficher_tableau_events
 
+
 @click.group()
 def event_commands():
     pass
+
 
 @event_commands.command(name="create")
 @click.option('--contract-id', prompt='ID du Contrat', type=int)
@@ -27,6 +29,7 @@ def create(ctx, contract_id, date_start, date_end, location, attendees, notes):
         click.secho(" Événement créé avec succès !", fg="green")
     else:
         click.secho(" Erreur : Contrat introuvable, non signé, ou n'appartenant pas à vos clients.", fg="red")
+
 
 @event_commands.command(name="list")
 @click.option('--filtre', type=click.Choice(['tous', 'sans-support', 'mes-evenements']), default='tous', help="Filtrer les événements.")
@@ -63,6 +66,7 @@ def update(ctx, event_id, support_id, notes):
         click.secho(" Événement mis à jour avec succès !", fg="green")
     else:
         click.secho(" Erreur : Modification refusée (mauvais rôle, événement introuvable, etc.).", fg="red")
+
 
 @event_commands.command(name="delete")
 @click.option('--event-id', prompt='ID de l\'événement à supprimer', type=int)

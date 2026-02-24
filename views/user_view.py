@@ -1,6 +1,7 @@
 import click
 from tabulate import tabulate
 
+
 def display_all_users(users):
     if not users:
         click.secho("\n Aucun utilisateur à afficher.\n", fg="yellow")

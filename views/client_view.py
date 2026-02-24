@@ -1,6 +1,7 @@
 import click
 from tabulate import tabulate
 
+
 def afficher_tableau_clients(clients):
     if not clients:
         click.secho("\n Aucun client à afficher.\n", fg="yellow")

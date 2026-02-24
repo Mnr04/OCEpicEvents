@@ -1,6 +1,7 @@
 import click
 from tabulate import tabulate
 
+
 def afficher_tableau_events(events):
     if not events:
         click.secho("\n Aucun événement à afficher.\n", fg="yellow")
