@@ -35,7 +35,6 @@ def update_client(nom_client, nouvelle_entreprise, commercial_id_connecte):
 
     if client:
         if client.commercial_contact_id != commercial_id_connecte:
-            print("Ce n'est pas votre client !")
             session.close()
             return False
 
@@ -44,13 +43,12 @@ def update_client(nom_client, nouvelle_entreprise, commercial_id_connecte):
         session.close()
         return True
     else:
-        print("Client introuvable.")
         session.close()
         return False
 
-def delete_client(client):
+def delete_client(client_name):
     session = Session()
-    client = session.query(Client).filter_by(full_name=client).first()
+    client = session.query(Client).filter_by(full_name=client_name).first()
 
     if client:
         session.delete(client)
@@ -58,7 +56,5 @@ def delete_client(client):
         session.close()
         return True
     else:
-        print("Client introuvable.")
         session.close()
         return False
-

@@ -1,5 +1,5 @@
 import click
-from controllers.auth import login_user
+from controllers.auth import login_user, logout_user
 
 @click.group()
 def auth_commands():
@@ -16,3 +16,7 @@ def login(username, password):
     else:
         click.secho("Identifiants incorrects.", fg="red")
 
+@auth_commands.command(name="logout")
+def logout():
+    logout_user()
+    click.secho(" Vous avez été déconnecté avec succès.", fg="green")

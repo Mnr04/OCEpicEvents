@@ -3,14 +3,12 @@ from database import Session
 
 def create_contract(client_id, montant_total, reste_a_payer, user_role):
     if user_role != "Gestion":
-        print("ERREUR : Seule la Gestion peut créer un contrat.")
         return False
 
     session = Session()
 
     client = session.query(Client).filter_by(id=client_id).first()
     if not client:
-        print("Client introuvable.")
         session.close()
         return False
 
@@ -32,11 +30,9 @@ def update_contract(contract_id, user_role, user_id, nouveau_statut=None, nouvea
     contrat = session.query(Contract).filter_by(id=contract_id).first()
 
     if not contrat:
-        print(" Contrat introuvable.")
         session.close()
         return False
 
-    # ils peuvent Créer et modifier tous les contrats
     if user_role == "Gestion":
         if nouveau_montant:
             contrat.total_amount = nouveau_montant
@@ -47,10 +43,8 @@ def update_contract(contract_id, user_role, user_id, nouveau_statut=None, nouvea
         session.close()
         return True
 
-    # seulement les contrats des clients dont ils sont responsables
     elif user_role == "Commercial":
         if contrat.commercial_contact_id != user_id:
-            print("Ce contrat ne vous appartient pas !")
             session.close()
             return False
 
@@ -60,7 +54,6 @@ def update_contract(contract_id, user_role, user_id, nouveau_statut=None, nouvea
             session.close()
             return True
         else:
-            print("Vous ne pouvez modifier que le statut.")
             session.close()
             return False
 
@@ -75,7 +68,6 @@ def get_all_contracts():
 
 def delete_contract(contract_id, user_role):
     if user_role != "Gestion":
-        print("Action interdite Gestion only")
         return False
 
     session = Session()
@@ -87,7 +79,6 @@ def delete_contract(contract_id, user_role):
         session.close()
         return True
 
-    print("Contrat introuvable.")
     session.close()
     return False
 

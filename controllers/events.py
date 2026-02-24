@@ -3,26 +3,22 @@ from database import Session
 
 def create_event(contract_id, date_start, date_end, location, attendees, notes, user_role, user_id):
     if user_role != "Commercial":
-        print("Seul un commercial peut créer un événement.")
         return False
 
     session = Session()
     contrat = session.query(Contract).filter_by(id=contract_id).first()
 
     if not contrat:
-        print("Contrat introuvable.")
         session.close()
         return False
 
-    # On vérifie que ce contrat appartient a nos clients
+    # On vérifie que ce contrat appartient à nos clients
     if contrat.commercial_contact_id != user_id:
-        print("Ce contrat n'appartient pas à vos clients.")
         session.close()
         return False
 
     # Verifie que le contrat est signé
     if contrat.status is False:
-        print("Le contrat n'est pas encore signé.")
         session.close()
         return False
 
@@ -53,7 +49,6 @@ def update_event(event_id, user_role, user_id, nouveau_support_id=None, nouvelle
     event = session.query(Event).filter_by(id=event_id).first()
 
     if not event:
-        print("Événement introuvable.")
         session.close()
         return False
 
@@ -64,13 +59,11 @@ def update_event(event_id, user_role, user_id, nouveau_support_id=None, nouvelle
             session.close()
             return True
         else:
-            print("Aucun ID de support fourni.")
             session.close()
             return False
 
     elif user_role == "Support":
         if event.support_contact_id != user_id:
-            print("Cet événement ne vous est pas assigné.")
             session.close()
             return False
 
@@ -80,7 +73,6 @@ def update_event(event_id, user_role, user_id, nouveau_support_id=None, nouvelle
             session.close()
             return True
 
-    print("Action non autorisée.")
     session.close()
     return False
 

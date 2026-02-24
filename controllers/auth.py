@@ -44,11 +44,13 @@ def get_logged_user():
         return payload
 
     except jwt.ExpiredSignatureError:
-        print("Session expirée.")
         return None
     except jwt.InvalidTokenError:
-        print("Token invalide.")
         return None
 
 
-
+def logout_user():
+    if os.path.exists(TOKEN_FILE):
+        os.remove(TOKEN_FILE)
+        return True
+    return False
