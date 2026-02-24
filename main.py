@@ -6,10 +6,12 @@ from views.cli_clients import client_commands
 from views.cli_contracts import contract_commands
 from views.cli_events import event_commands
 
+
 @click.group()
 @click.pass_context
 def cli(ctx):
     ctx.obj = get_logged_user()
+
 
 cli.add_command(auth_commands, name="auth")
 cli.add_command(user_commands, name="users")
