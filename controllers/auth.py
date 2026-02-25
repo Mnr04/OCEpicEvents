@@ -4,8 +4,11 @@ import datetime
 from database import Session
 from utils import verify_password
 import os
+from dotenv import load_dotenv
 
-SECRET_KEY = "k&1$v1k&1$v18#50$E^4!k5$8#50$E^4!k5$k&1$v18#50$E^4!k5$"
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 TOKEN_FILE = "session_token.txt"
 

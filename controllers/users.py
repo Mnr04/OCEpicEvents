@@ -1,7 +1,8 @@
 from models.models import User, UserRole
 from database import Session
 from sqlalchemy.exc import IntegrityError
-import hashlib
+from utils import hash_password
+import sentry_sdk
 
 ROLE_MAP = {
     "Gestion": UserRole.GESTION,
@@ -11,7 +12,7 @@ ROLE_MAP = {
 
 def create_user(username, email, password, role_name):
     session = Session()
-    password_hash = hashlib.sha256(password.encode()).hexdigest()
+    password_hash = hash_password(password)
 
     role = ROLE_MAP.get(role_name)
 
@@ -20,6 +21,7 @@ def create_user(username, email, password, role_name):
     try:
         session.add(new_user)
         session.commit()
+        sentry_sdk.capture_message(f"Nouveau collaborateur créé : {username} ({role_name})", level="info")
         session.close()
         return True
     except IntegrityError:
@@ -40,6 +42,7 @@ def update_user(username, new_role):
     if user and new_role in ROLE_MAP:
         user.role = ROLE_MAP[new_role]
         session.commit()
+        sentry_sdk.capture_message(f"collaborateur modifié : {username} ({new_role})", level="info")
         session.close()
         return True
 

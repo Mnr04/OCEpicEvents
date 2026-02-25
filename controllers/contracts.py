@@ -1,5 +1,6 @@
 from models.models import Contract, Client
 from database import Session
+import sentry_sdk
 
 def create_contract(client_id, montant_total, reste_a_payer, user_role):
     if user_role != "Gestion":
@@ -38,6 +39,8 @@ def update_contract(contract_id, user_role, user_id, nouveau_statut=None, nouvea
             contrat.total_amount = nouveau_montant
         if nouveau_statut is not None:
             contrat.status = nouveau_statut
+            if nouveau_statut is True:
+                sentry_sdk.capture_message(f"Contrat signé : {contract_id}", level="info")
 
         session.commit()
         session.close()
@@ -51,6 +54,9 @@ def update_contract(contract_id, user_role, user_id, nouveau_statut=None, nouvea
         if nouveau_statut is not None:
             contrat.status = nouveau_statut
             session.commit()
+            if nouveau_statut is True:
+                sentry_sdk.capture_message(f"Contrat signé : {contract_id}", level="info")
+
             session.close()
             return True
         else:
