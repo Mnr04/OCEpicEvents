@@ -5,6 +5,17 @@ from views.cli_users import user_commands
 from views.cli_clients import client_commands
 from views.cli_contracts import contract_commands
 from views.cli_events import event_commands
+import sentry_sdk
+from dotenv import load_dotenv
+import os
+
+# SENTRY INIT
+load_dotenv()
+
+sentry_sdk.init(
+    dsn=os.getenv("SENTRY_DSN"),
+    traces_sample_rate=1.0,
+)
 
 
 @click.group()
