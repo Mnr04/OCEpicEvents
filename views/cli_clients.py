@@ -1,6 +1,7 @@
 import click
 from controllers.clients import create_client, get_all_clients, update_client
 from views.client_view import afficher_tableau_clients
+from utils import validate_email, validate_phone
 
 @click.group()
 def client_commands():
@@ -16,6 +17,14 @@ def create(ctx, nom, email, tel, entreprise):
     user = ctx.obj
     if not user or user.get('role') != 'Commercial':
         click.secho(" Accès refusé. Seul un Commercial peut créer un client.", fg="red")
+        return
+
+    if not validate_email(email):
+        click.secho(" Le format de l'email est invalide.", fg="red")
+        return
+
+    if not validate_phone(tel):
+        click.secho(" Le format du numéro de téléphone est invalide.", fg="red")
         return
 
     if create_client(nom, email, tel, entreprise, user.get('user_id')):

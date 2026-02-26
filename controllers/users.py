@@ -24,8 +24,9 @@ def create_user(username, email, password, role_name):
         sentry_sdk.capture_message(f"Nouveau collaborateur créé : {username} ({role_name})", level="info")
         session.close()
         return True
-    except IntegrityError:
+    except IntegrityError as e:
         session.rollback()
+        sentry_sdk.capture_exception(e)
         session.close()
         return False
 

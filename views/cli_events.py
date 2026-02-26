@@ -4,6 +4,7 @@ from controllers.events import (
     delete_event, get_events_without_support, get_my_events
 )
 from views.event_view import afficher_tableau_events
+from utils import validate_dates
 
 
 @click.group()
@@ -23,6 +24,14 @@ def create(ctx, contract_id, date_start, date_end, location, attendees, notes):
     user = ctx.obj
     if not user or user.get('role') != 'Commercial':
         click.secho(" Accès refusé. Seul un Commercial peut créer un événement.", fg="red")
+        return
+
+    if not validate_dates(date_start, date_end):
+        click.secho(" Le format des dates est invalide ou la date de fin précède la date de début.", fg="red")
+        return
+
+    if attendees < 0:
+        click.secho(" Le nombre de participants ne peut pas être négatif.", fg="red")
         return
 
     if create_event(contract_id, date_start, date_end, location, attendees, notes, user.get('role'), user.get('user_id')):

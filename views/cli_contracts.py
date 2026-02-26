@@ -4,6 +4,7 @@ from controllers.contracts import (
     delete_contract, get_contracts_unsigned, get_contracts_unpaid
 )
 from views.contract_view import afficher_tableau_contrats
+from utils import validate_amount
 
 @click.group()
 def contract_commands():
@@ -18,6 +19,13 @@ def create(ctx, client_id, total, reste):
     user = ctx.obj
     if not user or user.get('role') != 'Gestion':
         click.secho(" Accès refusé. Seule l'équipe Gestion peut créer un contrat.", fg="red")
+        return
+
+    if not validate_amount(total) or not validate_amount(reste):
+        click.secho(" Erreur : Les montants doivent être des nombres positifs.", fg="red")
+        return
+    if reste > total:
+        click.secho(" Erreur : Le reste à payer ne peut pas être supérieur au total.", fg="red")
         return
 
     if create_contract(client_id, total, reste, user.get('role')):

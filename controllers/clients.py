@@ -1,6 +1,7 @@
 from models.models import Client
 from database import Session
 from sqlalchemy.exc import IntegrityError
+import sentry_sdk
 
 def create_client(nom, email, telephone, entreprise, commercial_id):
     session = Session()
@@ -18,8 +19,9 @@ def create_client(nom, email, telephone, entreprise, commercial_id):
         session.commit()
         session.close()
         return True
-    except IntegrityError:
+    except IntegrityError as e:
         session.rollback()
+        sentry_sdk.capture_exception(e)
         session.close()
         return False
 
