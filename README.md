@@ -84,7 +84,7 @@ python main.py users list
 # Create a user (Click will prompt you step by step)
 python main.py users create
 
-# Pro mode: pass everything in a single line!
+# One line mode
 python main.py users create --nom "Alice" --email "alice@epicevents.com" --role "Commercial"
 
 # Update or delete
@@ -110,10 +110,10 @@ python main.py clients update
 # View all contracts
 python main.py contracts list
 
-# View ONLY unsigned contracts (Very useful filter for sales reps!)
+# View only unsigned contracts
 python main.py contracts list --filtre non-signes
 
-# View ONLY unpaid contracts
+# View only unpaid contracts
 python main.py contracts list --filtre non-payes
 
 # Create a contract (Management Team only)
