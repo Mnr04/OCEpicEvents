@@ -12,6 +12,7 @@ import os
 # SENTRY INIT
 load_dotenv()
 
+# Initialize Sentry to capture exceptions and monitor application.
 sentry_sdk.init(
     dsn=os.getenv("SENTRY_DSN"),
     traces_sample_rate=1.0,

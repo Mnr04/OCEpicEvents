@@ -3,6 +3,10 @@ from database import Session
 import sentry_sdk
 
 def create_contract(client_id, montant_total, reste_a_payer, user_role):
+    """
+    Create a new contract for a client.
+    Only users with the 'Gestion' role can do this.
+    """
     if user_role != "Gestion":
         return False
 
@@ -27,6 +31,11 @@ def create_contract(client_id, montant_total, reste_a_payer, user_role):
     return True
 
 def update_contract(contract_id, user_role, user_id, nouveau_statut=None, nouveau_montant=None):
+    """
+    Update a contract.
+    'Gestion' can change the total amount. 'Commercial' can sign the contract (change status to True).
+    """
+    # ...
     session = Session()
     contrat = session.query(Contract).filter_by(id=contract_id).first()
 
@@ -89,6 +98,9 @@ def delete_contract(contract_id, user_role):
     return False
 
 def get_contracts_unsigned():
+    """
+    Get a list of all contracts where the status is False (not signed).
+    """
     session = Session()
     contrats = session.query(Contract).filter_by(status=False).all()
     session.close()
@@ -101,6 +113,9 @@ def get_contracts_signed():
     return contrats
 
 def get_contracts_unpaid():
+    """
+    Get a list of all contracts where the remaining amount is greater than zero.
+    """
     session = Session()
     contrats = session.query(Contract).filter(Contract.remaining_amount > 0).all()
     session.close()

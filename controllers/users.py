@@ -11,6 +11,10 @@ ROLE_MAP = {
 }
 
 def create_user(username, email, password, role_name):
+    """
+    Create a new user in the database.
+    Returns True if the user is created or False.
+    """
     session = Session()
     password_hash = hash_password(password)
 
@@ -31,12 +35,19 @@ def create_user(username, email, password, role_name):
         return False
 
 def get_all_users():
+    """
+    Get a list of all users from the database.
+    """
     session = Session()
     users = session.query(User).all()
     session.close()
     return users
 
 def update_user(username, new_role):
+    """
+    Update the role of an existing user.
+    Returns True if the update is successful, False if the user is not found.
+    """
     session = Session()
     user = session.query(User).filter_by(username=username).first()
 
@@ -51,6 +62,10 @@ def update_user(username, new_role):
     return False
 
 def delete_user(username):
+    """
+    Delete a user from the database using their username.
+    Returns True if deleted, False if not found.
+    """
     session = Session()
     user = session.query(User).filter_by(username=username).first()
 

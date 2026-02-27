@@ -2,6 +2,9 @@ from models.models import Event, Contract
 from database import Session
 
 def create_event(contract_id, date_start, date_end, location, attendees, notes, user_role, user_id):
+    """
+    Create a new event.
+    """
     if user_role != "Commercial":
         return False
 
@@ -45,6 +48,10 @@ def get_all_events():
     return events
 
 def update_event(event_id, user_role, user_id, nouveau_support_id=None, nouvelles_notes=None):
+    """
+    Update an event.
+    'Gestion' can assign a support contact. 'Support' can update the notes.
+    """
     session = Session()
     event = session.query(Event).filter_by(id=event_id).first()
 
@@ -88,12 +95,18 @@ def delete_event(event_id):
     return False
 
 def get_events_without_support():
+    """
+    Return a list of events that do not have a support contact.
+    """
     session = Session()
     events = session.query(Event).filter_by(support_contact_id=None).all()
     session.close()
     return events
 
 def get_my_events(user_id):
+    """
+    Return a list of events assigned to the connected support user.
+    """
     session = Session()
     events = session.query(Event).filter_by(support_contact_id=user_id).all()
     session.close()

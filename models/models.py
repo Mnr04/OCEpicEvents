@@ -13,6 +13,10 @@ class UserRole(enum.Enum):
 
 
 class User(Base):
+    """
+    Represents a company employee in the database.
+    Employees can have one of three roles: Gestion, Commercial, or Support.
+    """
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
@@ -28,6 +32,10 @@ class User(Base):
 
 
 class Client(Base):
+    """
+    Represents a client company or individual.
+    Each client is linked to a specific commercial contact.
+    """
     __tablename__ = 'clients'
 
     id = Column(Integer, primary_key=True)

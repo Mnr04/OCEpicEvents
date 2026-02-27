@@ -4,6 +4,10 @@ from sqlalchemy.exc import IntegrityError
 import sentry_sdk
 
 def create_client(nom, email, telephone, entreprise, commercial_id):
+    """
+    Create a new client and link them to a sales contact (commercial).
+    Returns True on success, False on error.
+    """
     session = Session()
 
     nouveau_client = Client(
@@ -26,12 +30,19 @@ def create_client(nom, email, telephone, entreprise, commercial_id):
         return False
 
 def get_all_clients():
+    """
+    Return a list of all clients.
+    """
     session = Session()
     clients = session.query(Client).all()
     session.close()
     return clients
 
 def update_client(nom_client, nouvelle_entreprise, commercial_id_connecte):
+    """
+    Update the company name of a client.
+    Checks if the connected user is the commercial contact for this client.
+    """
     session = Session()
     client = session.query(Client).filter_by(full_name=nom_client).first()
 
@@ -49,6 +60,9 @@ def update_client(nom_client, nouvelle_entreprise, commercial_id_connecte):
         return False
 
 def delete_client(client_name):
+    """
+    Delete a client by their full name.
+    """
     session = Session()
     client = session.query(Client).filter_by(full_name=client_name).first()
 
