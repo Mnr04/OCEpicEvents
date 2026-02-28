@@ -17,7 +17,7 @@ cd OCEpicEvents
 2. Create and activate a virtual environment (recommended):
 
 ```bash
-python -m venv env
+python3 -m venv env
 source env/bin/activate
 
 # On Windows:

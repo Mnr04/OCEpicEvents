@@ -1,5 +1,6 @@
 from models.models import Event, Contract
 from database import Session
+from datetime import datetime
 
 
 def create_event(
@@ -13,10 +14,17 @@ def create_event(
         user_id
         ):
     """
-    Create a new event.
+    Crée un nouvel événement.
+    Gère les dates en format texte (CLI) ou objets datetime (Tests).
     """
     if user_role != "Commercial":
         return False
+
+    # CLI
+    if isinstance(date_start, str):
+        date_start = datetime.strptime(date_start, "%Y-%m-%d %H:%M")
+    if isinstance(date_end, str):
+        date_end = datetime.strptime(date_end, "%Y-%m-%d %H:%M")
 
     session = Session()
     contrat = session.query(Contract).filter_by(id=contract_id).first()
@@ -25,17 +33,16 @@ def create_event(
         session.close()
         return False
 
-    # On vérifie que ce contrat appartient à nos clients
+    # Vérifie que ce contrat appartient aux clients du commercial connecté
     if contrat.commercial_contact_id != user_id:
         session.close()
         return False
 
-    # Verifie que le contrat est signé
+    # Vérifie que le contrat est signé
     if contrat.status is False:
         session.close()
         return False
 
-    # Create
     nouveau_event = Event(
         contract_id=contrat.id,
         event_date_start=date_start,

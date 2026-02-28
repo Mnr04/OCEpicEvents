@@ -62,7 +62,9 @@ class Client(Base):
     commercial_contact = relationship("User", back_populates="clients")
 
     # relation to contract
-    contracts = relationship("Contract", back_populates="client")
+    contracts = relationship(
+        "Contract", back_populates="client", cascade="all, delete-orphan"
+        )
 
 
 class Contract(Base):
@@ -85,7 +87,9 @@ class Contract(Base):
     commercial_contact = relationship("User", back_populates="contracts")
 
     # relation to event
-    events = relationship("Event", back_populates="contract")
+    events = relationship(
+        "Event", back_populates="contract", cascade="all, delete-orphan"
+        )
 
 
 class Event(Base):
