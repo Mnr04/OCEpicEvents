@@ -3,6 +3,7 @@ from database import Session
 from sqlalchemy.exc import IntegrityError
 import sentry_sdk
 
+
 def create_client(nom, email, telephone, entreprise, commercial_id):
     """
     Create a new client and link them to a sales contact (commercial).
@@ -29,6 +30,7 @@ def create_client(nom, email, telephone, entreprise, commercial_id):
         session.close()
         return False
 
+
 def get_all_clients():
     """
     Return a list of all clients.
@@ -37,6 +39,7 @@ def get_all_clients():
     clients = session.query(Client).all()
     session.close()
     return clients
+
 
 def update_client(nom_client, nouvelle_entreprise, commercial_id_connecte):
     """
@@ -58,6 +61,7 @@ def update_client(nom_client, nouvelle_entreprise, commercial_id_connecte):
     else:
         session.close()
         return False
+
 
 def delete_client(client_name):
     """

@@ -7,6 +7,7 @@ from controllers.contracts import (
 from models.models import User, Client, Contract
 from database import Session
 
+
 def test_contract_filters():
     delete_client("Client_01")
     delete_user("Commercial_01")
@@ -14,12 +15,14 @@ def test_contract_filters():
     # On crée un commercial et un client
     create_user("Commercial_01", "c01@test.com", "123", "Commercial")
     session = Session()
-    comm_id = session.query(User).filter_by(username="Commercial_01").first().id
+    comm_id = session.query(User).filter_by(
+        username="Commercial_01").first().id
     session.close()
 
     create_client("Client_01", "c01@filtre.com", "000", "Societe_1", comm_id)
     session = Session()
-    client_id = session.query(Client).filter_by(full_name="Client_01").first().id
+    client_id = session.query(Client).filter_by(
+        full_name="Client_01").first().id
     session.close()
 
     # On crée un contrat

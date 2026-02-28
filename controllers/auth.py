@@ -12,6 +12,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 TOKEN_FILE = "session_token.txt"
 
+
 def login_user(username, password):
     """
     Check the username and password.
@@ -28,8 +29,9 @@ def login_user(username, password):
         "user_id": user.id,
         "username": user.username,
         "role": user.role.value,
-        # Token expiration is set to 4 hours for security reasons (OWASP recommendation)
-        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=4)
+        # Token expiration is set to 4 hours for security reasons (OWASP)
+        "exp": datetime.datetime.now(
+               datetime.timezone.utc) + datetime.timedelta(hours=4)
     }
 
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)

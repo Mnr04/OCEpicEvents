@@ -1,10 +1,20 @@
-from controllers.users import create_user, delete_user
-from controllers.clients import create_client, delete_client
-from controllers.contracts import create_contract, update_contract, delete_contract
-from controllers.events import create_event, update_event, delete_event, get_all_events
-from models.models import User, Client, Contract, Event
-from database import Session
 from datetime import datetime, timedelta
+
+from controllers.clients import create_client, delete_client
+from controllers.contracts import (
+    create_contract,
+    delete_contract,
+    update_contract,
+)
+from controllers.events import (
+    create_event,
+    delete_event,
+    update_event,
+)
+from controllers.users import create_user, delete_user
+from database import Session
+from models.models import Client, Contract, Event, User
+
 
 def test_crud_events():
     delete_client("Client_Event")
@@ -22,7 +32,9 @@ def test_crud_events():
     # commercial crée un client
     create_client("Client_Event", "c01@cli.com", "00", "Boite", comm_id)
     session = Session()
-    client_id = session.query(Client).filter_by(full_name="Client_Event").first().id
+    client_id = (
+        session.query(Client).filter_by(full_name="Client_Event").first().id
+    )
     session.close()
 
     # La gestion crée un contrat
@@ -35,15 +47,21 @@ def test_crud_events():
     date_debut = datetime.now()
     date_fin = date_debut + timedelta(days=2)
 
-    # Le commercia créer l'événement --> Le contrat n'est pas signé. Return False
-    result = create_event(contrat_id, date_debut, date_fin, "Paris", 50, "Test", "Commercial", comm_id)
+    # Le commercia créer l'événement --> Le contrat n'est pas signé.
+    result = create_event(
+        contrat_id, date_debut, date_fin, "Paris", 50, "Test", "Commercial",
+        comm_id
+    )
     assert result is False
 
     # Le commercial signe le contrat
     update_contract(contrat_id, "Commercial", comm_id, nouveau_statut=True)
 
-   # Le commercia créer l'événement --> Le contrat n'est pas signé. Return True
-    result = create_event(contrat_id, date_debut, date_fin, "Paris", 50, "Test", "Commercial", comm_id)
+    # Le commercia créer l'événement --> Le contrat n'est pas signé.
+    result = create_event(
+        contrat_id, date_debut, date_fin, "Paris", 50, "Test", "Commercial",
+        comm_id
+    )
     assert result is True
 
     # Récupération de l'événement
@@ -61,7 +79,9 @@ def test_crud_events():
     session.close()
 
     # Le Support met à jour l'événement
-    update_event(event_id, "Support", supp_id, nouvelles_notes="Notes modifiées")
+    update_event(
+        event_id, "Support", supp_id, nouvelles_notes="Notes modifiées"
+    )
 
     session = Session()
     event_modifie = session.query(Event).filter_by(id=event_id).first()

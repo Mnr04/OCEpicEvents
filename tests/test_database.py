@@ -3,9 +3,24 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models.models import Base, User, UserRole, Client, Contract
 from database import Session
-from controllers.users import create_user, get_all_users, update_user, delete_user
-from controllers.clients import create_client, get_all_clients, update_client
-from controllers.contracts import create_contract, get_all_contracts, update_contract, delete_contract
+from controllers.clients import (
+    create_client,
+    get_all_clients,
+    update_client,
+)
+from controllers.contracts import (
+    create_contract,
+    delete_contract,
+    get_all_contracts,
+    update_contract,
+)
+from controllers.users import (
+    create_user,
+    delete_user,
+    get_all_users,
+    update_user,
+)
+
 
 def test_create_user():
     DB_FILE = "test_temporaire.db"
@@ -39,7 +54,9 @@ def test_crud_users():
     delete_user("test")
 
     # Create
-    user = create_user("test", "test@epicevents.com", "password123", "Commercial")
+    user = create_user(
+        "test", "test@epicevents.com", "password123", "Commercial"
+        )
     assert user is True
 
     # Get ALL
@@ -68,11 +85,14 @@ def test_crud_clients():
     # Create commercial
     create_user("commercial_01", "commercial@test.com", "123", "Commercial")
     session = Session()
-    commercial = session.query(User).filter_by(username="commercial_01").first()
+    commercial = session.query(User).filter_by(
+        username="commercial_01").first()
     session.close()
 
     # Create Client
-    resultat = create_client("Client_Test", "client@test.com", "123", "societe_01", commercial.id)
+    resultat = create_client(
+        "Client_Test", "client@test.com", "123", "societe_01", commercial.id
+        )
     assert resultat is True
 
     # Get All
@@ -85,7 +105,8 @@ def test_crud_clients():
     assert update is True
 
     session = Session()
-    client_modifie = session.query(Client).filter_by(full_name="Client_Test").first()
+    client_modifie = session.query(Client).filter_by(
+        full_name="Client_Test").first()
     assert client_modifie.company_name == "Nouvelle Entreprise"
 
     # Sécurity other commercial id dont update other client
@@ -111,11 +132,18 @@ def test_crud_contracts():
     create_user("commercial_01", "commercial_01@test.com", "123", "Commercial")
 
     session = Session()
-    commercial = session.query(User).filter_by(username="commercial_01").first()
+    commercial = session.query(User).filter_by(
+        username="commercial_01").first()
     session.close()
 
-    #Creation d'un client
-    create_client("Client_Test", "client01@test.com", "0606060606", "Societe_01", commercial.id)
+    # Creation d'un client
+    create_client(
+        "Client_Test",
+        "client01@test.com",
+        "0606060606",
+        "Societe_01",
+        commercial.id
+        )
 
     session = Session()
     client = session.query(Client).filter_by(full_name="Client_Test").first()
@@ -137,7 +165,9 @@ def test_crud_contracts():
     assert contrat.id in all_ids
 
     # UPDATE
-    update_ok = update_contract(contrat.id, "Commercial", commercial.id, nouveau_statut=True)
+    update_ok = update_contract(
+        contrat.id, "Commercial", commercial.id, nouveau_statut=True
+        )
     assert update_ok is True
 
     # Vérif contrat signé
@@ -147,7 +177,9 @@ def test_crud_contracts():
     session.close()
 
     # On verifie si un commercial peut modifier un autre contrat
-    update = update_contract(contrat.id, "Commercial", 666, nouveau_statut=False)
+    update = update_contract(
+        contrat.id, "Commercial", 666, nouveau_statut=False
+        )
     assert update is False
 
     # DELETE (Only Gestion)
@@ -156,7 +188,8 @@ def test_crud_contracts():
 
     # Verif contrat delete
     session = Session()
-    contrat_to_delete = session.query(Contract).filter_by(id=contrat.id).first()
+    contrat_to_delete = session.query(Contract).filter_by(
+        id=contrat.id).first()
     assert contrat_to_delete is None
     session.close()
 

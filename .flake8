@@ -1,0 +1,16 @@
+[flake8]
+exclude =
+    .git,
+    __pycache__,
+    venv,
+    env,
+    .venv,
+    htmlcov,
+    .tox,
+    .pytest_cache,
+    .coverage
+
+max-line-length = 79
+
+format = html
+htmldir = rapport_flake8

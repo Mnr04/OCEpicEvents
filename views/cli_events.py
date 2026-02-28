@@ -1,10 +1,15 @@
 import click
+
 from controllers.events import (
-    create_event, get_all_events, update_event,
-    delete_event, get_events_without_support, get_my_events
+    create_event,
+    delete_event,
+    get_all_events,
+    get_events_without_support,
+    get_my_events,
+    update_event,
 )
-from views.event_view import afficher_tableau_events
 from utils import validate_dates
+from views.event_view import afficher_tableau_events
 
 
 @click.group()
@@ -23,25 +28,47 @@ def event_commands():
 def create(ctx, contract_id, date_start, date_end, location, attendees, notes):
     user = ctx.obj
     if not user or user.get('role') != 'Commercial':
-        click.secho(" Accès refusé. Seul un Commercial peut créer un événement.", fg="red")
+        click.secho(
+            " Accès refusé. Seul un Commercial peut créer un événement.",
+            fg="red"
+        )
         return
 
     if not validate_dates(date_start, date_end):
-        click.secho(" Le format des dates est invalide ou la date de fin précède la date de début.", fg="red")
+        click.secho(
+            " Le format des dates est invalide ou la date de fin précède "
+            "la date de début.",
+            fg="red"
+        )
         return
 
     if attendees < 0:
-        click.secho(" Le nombre de participants ne peut pas être négatif.", fg="red")
+        click.secho(
+            " Le nombre de participants ne peut pas être négatif.",
+            fg="red"
+        )
         return
 
-    if create_event(contract_id, date_start, date_end, location, attendees, notes, user.get('role'), user.get('user_id')):
+    if create_event(
+        contract_id, date_start, date_end, location, attendees, notes,
+        user.get('role'), user.get('user_id')
+    ):
         click.secho(" Événement créé avec succès !", fg="green")
     else:
-        click.secho(" Erreur : Contrat introuvable, non signé, ou n'appartenant pas à vos clients.", fg="red")
+        click.secho(
+            " Erreur : Contrat introuvable, non signé, ou n'appartenant pas "
+            "à vos clients.",
+            fg="red"
+        )
 
 
 @event_commands.command(name="list")
-@click.option('--filtre', type=click.Choice(['tous', 'sans-support', 'mes-evenements']), default='tous', help="Filtrer les événements.")
+@click.option(
+    '--filtre',
+    type=click.Choice(['tous', 'sans-support', 'mes-evenements']),
+    default='tous',
+    help="Filtrer les événements."
+)
 @click.pass_context
 def list_events(ctx, filtre):
     user = ctx.obj
@@ -60,10 +87,24 @@ def list_events(ctx, filtre):
 
     afficher_tableau_events(events)
 
+
 @event_commands.command(name="update")
-@click.option('--event-id', prompt='ID de l\'événement à modifier', type=int)
-@click.option('--support-id', type=int, help='ID du collaborateur Support à assigner (Gestion uniquement).', default=None)
-@click.option('--notes', help='Nouvelles notes pour l\'événement (Support uniquement).', default=None)
+@click.option(
+    '--event-id',
+    prompt="ID de l'événement à modifier",
+    type=int
+)
+@click.option(
+    '--support-id',
+    type=int,
+    help='ID du collaborateur Support à assigner (Gestion uniquement).',
+    default=None
+)
+@click.option(
+    '--notes',
+    help="Nouvelles notes pour l'événement (Support uniquement).",
+    default=None
+)
 @click.pass_context
 def update(ctx, event_id, support_id, notes):
     user = ctx.obj
@@ -71,22 +112,37 @@ def update(ctx, event_id, support_id, notes):
         click.secho(" Vous devez être connecté.", fg="red")
         return
 
-    if update_event(event_id, user.get('role'), user.get('user_id'), nouveau_support_id=support_id, nouvelles_notes=notes):
+    if update_event(
+        event_id,
+        user.get('role'),
+        user.get('user_id'),
+        nouveau_support_id=support_id,
+        nouvelles_notes=notes
+    ):
         click.secho(" Événement mis à jour avec succès !", fg="green")
     else:
-        click.secho(" Erreur : Modification refusée (mauvais rôle, événement introuvable, etc.).", fg="red")
+        click.secho(
+            " Erreur : Modification refusée (mauvais rôle, événement "
+            "introuvable, etc.).",
+            fg="red"
+        )
 
 
 @event_commands.command(name="delete")
-@click.option('--event-id', prompt='ID de l\'événement à supprimer', type=int)
+@click.option(
+    '--event-id',
+    prompt="ID de l'événement à supprimer",
+    type=int
+)
 @click.pass_context
 def delete(ctx, event_id):
     user = ctx.obj
     if not user or user.get('role') != 'Gestion':
-         click.secho(" Accès refusé.", fg="red")
-         return
+        click.secho(" Accès refusé.", fg="red")
+        return
 
-    if click.confirm(f"Êtes-vous sûr de vouloir supprimer l'événement {event_id} ?"):
+    confirm_msg = f"Êtes-vous sûr de supprimer l'événement {event_id} ?"
+    if click.confirm(confirm_msg):
         if delete_event(event_id):
             click.secho(" Événement supprimé.", fg="green")
         else:

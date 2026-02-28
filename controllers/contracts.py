@@ -2,6 +2,7 @@ from models.models import Contract, Client
 from database import Session
 import sentry_sdk
 
+
 def create_contract(client_id, montant_total, reste_a_payer, user_role):
     """
     Create a new contract for a client.
@@ -30,10 +31,17 @@ def create_contract(client_id, montant_total, reste_a_payer, user_role):
     session.close()
     return True
 
-def update_contract(contract_id, user_role, user_id, nouveau_statut=None, nouveau_montant=None):
+
+def update_contract(
+        contract_id,
+        user_role,
+        user_id,
+        nouveau_statut=None,
+        nouveau_montant=None
+        ):
     """
     Update a contract.
-    'Gestion' can change the total amount. 'Commercial' can sign the contract (change status to True).
+    'Gestion' can change the total amount. 'Commercial' can sign the contracts.
     """
     # ...
     session = Session()
@@ -49,7 +57,9 @@ def update_contract(contract_id, user_role, user_id, nouveau_statut=None, nouvea
         if nouveau_statut is not None:
             contrat.status = nouveau_statut
             if nouveau_statut is True:
-                sentry_sdk.capture_message(f"Contrat signé : {contract_id}", level="info")
+                sentry_sdk.capture_message(
+                    f"Contrat signé : {contract_id}", level="info"
+                    )
 
         session.commit()
         session.close()
@@ -64,7 +74,9 @@ def update_contract(contract_id, user_role, user_id, nouveau_statut=None, nouvea
             contrat.status = nouveau_statut
             session.commit()
             if nouveau_statut is True:
-                sentry_sdk.capture_message(f"Contrat signé : {contract_id}", level="info")
+                sentry_sdk.capture_message(
+                    f"Contrat signé : {contract_id}", level="info"
+                    )
 
             session.close()
             return True
@@ -75,11 +87,13 @@ def update_contract(contract_id, user_role, user_id, nouveau_statut=None, nouvea
     session.close()
     return False
 
+
 def get_all_contracts():
     session = Session()
     contrats = session.query(Contract).all()
     session.close()
     return contrats
+
 
 def delete_contract(contract_id, user_role):
     if user_role != "Gestion":
@@ -97,6 +111,7 @@ def delete_contract(contract_id, user_role):
     session.close()
     return False
 
+
 def get_contracts_unsigned():
     """
     Get a list of all contracts where the status is False (not signed).
@@ -106,17 +121,20 @@ def get_contracts_unsigned():
     session.close()
     return contrats
 
+
 def get_contracts_signed():
     session = Session()
     contrats = session.query(Contract).filter_by(status=True).all()
     session.close()
     return contrats
 
+
 def get_contracts_unpaid():
     """
-    Get a list of all contracts where the remaining amount is greater than zero.
+    Get a list of all contracts where the remaining amount is > than zero.
     """
     session = Session()
-    contrats = session.query(Contract).filter(Contract.remaining_amount > 0).all()
+    contrats = session.query(Contract).filter(
+        Contract.remaining_amount > 0).all()
     session.close()
     return contrats

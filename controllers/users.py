@@ -10,6 +10,7 @@ ROLE_MAP = {
     "Commercial": UserRole.COMMERCIAL
 }
 
+
 def create_user(username, email, password, role_name):
     """
     Create a new user in the database.
@@ -20,12 +21,19 @@ def create_user(username, email, password, role_name):
 
     role = ROLE_MAP.get(role_name)
 
-    new_user = User(username=username, email=email, password_hash=password_hash, role = role)
+    new_user = User(
+        username=username,
+        email=email,
+        password_hash=password_hash,
+        role=role
+        )
 
     try:
         session.add(new_user)
         session.commit()
-        sentry_sdk.capture_message(f"Nouveau collaborateur créé : {username} ({role_name})", level="info")
+        sentry_sdk.capture_message(
+            f"Nouveau collaborateur : {username} ({role_name})", level="info"
+            )
         session.close()
         return True
     except IntegrityError as e:
@@ -33,6 +41,7 @@ def create_user(username, email, password, role_name):
         sentry_sdk.capture_exception(e)
         session.close()
         return False
+
 
 def get_all_users():
     """
@@ -42,6 +51,7 @@ def get_all_users():
     users = session.query(User).all()
     session.close()
     return users
+
 
 def update_user(username, new_role):
     """
@@ -54,12 +64,15 @@ def update_user(username, new_role):
     if user and new_role in ROLE_MAP:
         user.role = ROLE_MAP[new_role]
         session.commit()
-        sentry_sdk.capture_message(f"collaborateur modifié : {username} ({new_role})", level="info")
+        sentry_sdk.capture_message(
+            f" user modifié : {username} ({new_role})", level="info"
+            )
         session.close()
         return True
 
     session.close()
     return False
+
 
 def delete_user(username):
     """
