@@ -101,7 +101,9 @@ def test_crud_clients():
     assert "Client_Test" in noms
 
     #  UPDATE
-    update = update_client("Client_Test", "Nouvelle Entreprise", commercial.id)
+    update = update_client(
+        "Client_Test", commercial.id, nouvelle_entreprise="Nouvelle Entreprise"
+        )
     assert update is True
 
     session = Session()
@@ -110,7 +112,7 @@ def test_crud_clients():
     assert client_modifie.company_name == "Nouvelle Entreprise"
 
     # Sécurity other commercial id dont update other client
-    update = update_client("Client_Test", "society_02", 18)
+    update = update_client("Client_Test", 18, nouvelle_entreprise="society_02")
     assert update is False
     session.close()
 

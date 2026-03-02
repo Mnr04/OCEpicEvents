@@ -41,9 +41,14 @@ def get_all_clients():
     return clients
 
 
-def update_client(nom_client, nouvelle_entreprise, commercial_id_connecte):
+def update_client(
+        nom_client,
+        commercial_id_connecte,
+        nouvelle_entreprise=None,
+        nouvel_email=None,
+        nouveau_tel=None):
     """
-    Update the company name of a client.
+    Update the client details.
     Checks if the connected user is the commercial contact for this client.
     """
     session = Session()
@@ -54,7 +59,13 @@ def update_client(nom_client, nouvelle_entreprise, commercial_id_connecte):
             session.close()
             return False
 
-        client.company_name = nouvelle_entreprise
+        if nouvelle_entreprise:
+            client.company_name = nouvelle_entreprise
+        if nouvel_email:
+            client.email = nouvel_email
+        if nouveau_tel:
+            client.phone = nouveau_tel
+
         session.commit()
         session.close()
         return True
