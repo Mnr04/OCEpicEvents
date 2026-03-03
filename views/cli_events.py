@@ -151,7 +151,7 @@ def delete(ctx, event_id):
 
     confirm_msg = f"Êtes-vous sûr de supprimer l'événement {event_id} ?"
     if click.confirm(confirm_msg):
-        if delete_event(event_id):
+        if delete_event(event_id, user.get('role')):
             click.secho(" Événement supprimé.", fg="green")
         else:
             click.secho(" Erreur : Événement introuvable.", fg="red")

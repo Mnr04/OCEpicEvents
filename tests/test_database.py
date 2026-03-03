@@ -51,11 +51,11 @@ def test_create_user():
 
 
 def test_crud_users():
-    delete_user("test")
+    delete_user("test", "Gestion")
 
     # Create
     user = create_user(
-        "test", "test@epicevents.com", "password123", "Commercial"
+        "test", "test@epicevents.com", "password123", "Commercial", "Gestion"
         )
     assert user is True
 
@@ -65,14 +65,14 @@ def test_crud_users():
     assert "test" in noms
 
     # Update
-    update_user("test", "Support")
+    update_user("test", "Support", "Gestion")
     session = Session()
     user_modifie = session.query(User).filter_by(username="test").first()
     assert user_modifie.role.value == "Support"
     session.close()
 
     # DELETE
-    delete_user("test")
+    delete_user("test", "Gestion")
     session = Session()
     user_supprime = session.query(User).filter_by(username="test").first()
     assert user_supprime is None
@@ -80,10 +80,10 @@ def test_crud_users():
 
 
 def test_crud_clients():
-    delete_user("commercial_01")
+    delete_user("commercial_01", "Gestion")
 
     # Create commercial
-    create_user("commercial_01", "commercial@test.com", "123", "Commercial")
+    create_user("commercial_01", "commercial@test.com", "123", "Commercial", "Gestion")
     session = Session()
     commercial = session.query(User).filter_by(
         username="commercial_01").first()
@@ -91,7 +91,7 @@ def test_crud_clients():
 
     # Create Client
     resultat = create_client(
-        "Client_Test", "client@test.com", "123", "societe_01", commercial.id
+        "Client_Test", "client@test.com", "123", "societe_01", commercial.id, "Commercial"
         )
     assert resultat is True
 
@@ -102,7 +102,7 @@ def test_crud_clients():
 
     #  UPDATE
     update = update_client(
-        "Client_Test", commercial.id, nouvelle_entreprise="Nouvelle Entreprise"
+        "Client_Test", commercial.id, "Commercial", nouvelle_entreprise="Nouvelle Entreprise"
         )
     assert update is True
 
@@ -112,7 +112,7 @@ def test_crud_clients():
     assert client_modifie.company_name == "Nouvelle Entreprise"
 
     # Sécurity other commercial id dont update other client
-    update = update_client("Client_Test", 18, nouvelle_entreprise="society_02")
+    update = update_client("Client_Test", 18, "Commercial", nouvelle_entreprise="society_02")
     assert update is False
     session.close()
 
@@ -124,14 +124,14 @@ def test_crud_clients():
         session.commit()
     session.close()
 
-    delete_user("commercial_01")
+    delete_user("commercial_01", "Gestion")
 
 
 def test_crud_contracts():
 
-    delete_user("commercial_01")
+    delete_user("commercial_01", "Gestion")
     # Création d'un commercial
-    create_user("commercial_01", "commercial_01@test.com", "123", "Commercial")
+    create_user("commercial_01", "commercial_01@test.com", "123", "Commercial", "Gestion")
 
     session = Session()
     commercial = session.query(User).filter_by(
@@ -144,8 +144,9 @@ def test_crud_contracts():
         "client01@test.com",
         "0606060606",
         "Societe_01",
-        commercial.id
-        )
+        commercial.id,
+        "Commercial"
+    )
 
     session = Session()
     client = session.query(Client).filter_by(full_name="Client_Test").first()
@@ -203,4 +204,4 @@ def test_crud_contracts():
         session.commit()
     session.close()
 
-    delete_user("commercial_01")
+    delete_user("commercial_01", "Gestion")

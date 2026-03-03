@@ -93,6 +93,7 @@ def update(ctx, nom, entreprise, email, tel):
 
     if update_client(
         nom, user.get('user_id'),
+        user.get('role'),
         nouvelle_entreprise=entreprise,
         nouvel_email=email,
         nouveau_tel=tel

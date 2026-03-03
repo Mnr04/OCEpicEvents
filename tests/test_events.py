@@ -18,11 +18,11 @@ from models.models import Client, Contract, Event, User
 
 def test_crud_events():
     delete_client("Client_Event")
-    delete_user("comercial_01")
-    delete_user("support_01")
+    delete_user("comercial_01", "Gestion")
+    delete_user("support_01", "Gestion")
 
-    create_user("comercial_01", "c01@event.com", "123", "Commercial")
-    create_user("support_01", "s01@event.com", "123", "Support")
+    create_user("comercial_01", "c01@event.com", "123", "Commercial", "Gestion")
+    create_user("support_01", "s01@event.com", "123", "Support", "Gestion")
 
     session = Session()
     comm_id = session.query(User).filter_by(username="comercial_01").first().id
@@ -30,7 +30,7 @@ def test_crud_events():
     session.close()
 
     # commercial crée un client
-    create_client("Client_Event", "c01@cli.com", "00", "Boite", comm_id)
+    create_client("Client_Event", "c01@cli.com", "00", "Boite", comm_id, "Commercial")
     session = Session()
     client_id = (
         session.query(Client).filter_by(full_name="Client_Event").first().id
@@ -47,7 +47,7 @@ def test_crud_events():
     date_debut = datetime.now()
     date_fin = date_debut + timedelta(days=2)
 
-    # Le commercia créer l'événement --> Le contrat n'est pas signé.
+    # Le commercial crée l'événement --> Le contrat n'est pas signé.
     result = create_event(
         contrat_id, date_debut, date_fin, "Paris", 50, "Test", "Commercial",
         comm_id
@@ -57,7 +57,7 @@ def test_crud_events():
     # Le commercial signe le contrat
     update_contract(contrat_id, "Commercial", comm_id, nouveau_statut=True)
 
-    # Le commercia créer l'événement --> Le contrat n'est pas signé.
+    # Le commercial crée l'événement --> Le contrat est signé.
     result = create_event(
         contrat_id, date_debut, date_fin, "Paris", 50, "Test", "Commercial",
         comm_id
@@ -88,8 +88,8 @@ def test_crud_events():
     assert event_modifie.notes == "Notes modifiées"
     session.close()
 
-    delete_event(event_id)
+    delete_event(event_id, "Gestion")
     delete_contract(contrat_id, "Gestion")
     delete_client("Client_Event")
-    delete_user("comercial_01")
-    delete_user("support_01")
+    delete_user("comercial_01", "Gestion")
+    delete_user("support_01", "Gestion")

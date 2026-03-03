@@ -109,7 +109,11 @@ def update_event(
     return False
 
 
-def delete_event(event_id):
+def delete_event(event_id, user_role):
+
+    if user_role != "Gestion":
+        return False
+
     session = Session()
     event = session.query(Event).filter_by(id=event_id).first()
     if event:

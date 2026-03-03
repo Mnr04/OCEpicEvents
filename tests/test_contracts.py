@@ -10,16 +10,16 @@ from database import Session
 
 def test_contract_filters():
     delete_client("Client_01")
-    delete_user("Commercial_01")
+    delete_user("Commercial_01", "Gestion")
 
     # On crée un commercial et un client
-    create_user("Commercial_01", "c01@test.com", "123", "Commercial")
+    create_user("Commercial_01", "c01@test.com", "123", "Commercial", "Gestion")
     session = Session()
     comm_id = session.query(User).filter_by(
         username="Commercial_01").first().id
     session.close()
 
-    create_client("Client_01", "c01@filtre.com", "000", "Societe_1", comm_id)
+    create_client("Client_01", "c01@filtre.com", "000", "Societe_1", comm_id, "Commercial")
     session = Session()
     client_id = session.query(Client).filter_by(
         full_name="Client_01").first().id
@@ -42,7 +42,7 @@ def test_contract_filters():
     ids_non_signes = [c.id for c in non_signes]
     assert contrat.id in ids_non_signes
 
-    # On update le contrat en le signat
+    # On update le contrat en le signant
     update_contract(contrat_id, "Commercial", comm_id, nouveau_statut=True)
 
     non_signes_apres = get_contracts_unsigned()
@@ -52,4 +52,4 @@ def test_contract_filters():
     # Clean code
     delete_contract(contrat_id, "Gestion")
     delete_client("Client_01")
-    delete_user("Commercial_01")
+    delete_user("Commercial_01", "Gestion")

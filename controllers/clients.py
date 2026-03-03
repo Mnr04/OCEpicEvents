@@ -47,6 +47,7 @@ def get_all_clients():
 def update_client(
         nom_client,
         commercial_id_connecte,
+        user_role,
         nouvelle_entreprise=None,
         nouvel_email=None,
         nouveau_tel=None):
@@ -54,6 +55,10 @@ def update_client(
     Update the client details.
     Checks if the connected user is the commercial contact for this client.
     """
+
+    if user_role != "Commercial":
+        return False
+
     session = Session()
     client = session.query(Client).filter_by(full_name=nom_client).first()
 
@@ -77,10 +82,13 @@ def update_client(
         return False
 
 
-def delete_client(client_name):
+def delete_client(client_name, user_role="Gestion"):
     """
     Delete a client by their full name.
     """
+    if user_role != "Gestion":
+        return False
+
     session = Session()
     client = session.query(Client).filter_by(full_name=client_name).first()
 
