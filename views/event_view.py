@@ -22,12 +22,20 @@ def afficher_tableau_events(events):
             event.event_date_end,
             event.location,
             event.attendees,
-            support
+            support,
+            event.notes
         ]
         tableau.append(ligne)
 
     headers = [
-        "ID", "Contrat", "Début", "Fin", "Lieu", "Participants", "Support"
+        "ID",
+        "Contrat",
+        "Début",
+        "Fin",
+        "Lieu",
+        "Participants",
+        "Support",
+        "Notes"
     ]
     click.echo("\n--- LISTE DES ÉVÉNEMENTS ---")
     click.echo(tabulate(tableau, headers=headers, tablefmt="grid"))

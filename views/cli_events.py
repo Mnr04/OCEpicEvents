@@ -112,6 +112,14 @@ def update(ctx, event_id, support_id, notes):
         click.secho(" Vous devez être connecté.", fg="red")
         return
 
+    if support_id is None and notes is None:
+        message = (
+            " spécifier une modification : "
+            "--support-id <ID> (si Gestion) ou --notes '...' (si Support)."
+        )
+        click.secho(message, fg="yellow")
+        return
+
     if update_event(
         event_id,
         user.get('role'),

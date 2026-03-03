@@ -114,6 +114,12 @@ def update(ctx, contract_id, montant, signe):
         click.secho(" Vous devez être connecté.", fg="red")
         return
 
+    if montant is None and not signe:
+        click.secho(
+            "Spécifier une modification (--montant ou --signe).", fg="yellow"
+            )
+        return
+
     nouveau_statut = True if signe else None
 
     if update_contract(
