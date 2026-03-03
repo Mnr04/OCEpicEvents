@@ -4,11 +4,14 @@ from sqlalchemy.exc import IntegrityError
 import sentry_sdk
 
 
-def create_client(nom, email, telephone, entreprise, commercial_id):
+def create_client(nom, email, telephone, entreprise, commercial_id, user_role):
     """
     Create a new client and link them to a sales contact (commercial).
     Returns True on success, False on error.
     """
+    if user_role != "Commercial":
+        return False
+
     session = Session()
 
     nouveau_client = Client(

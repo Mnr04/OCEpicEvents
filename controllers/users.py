@@ -11,11 +11,14 @@ ROLE_MAP = {
 }
 
 
-def create_user(username, email, password, role_name):
+def create_user(username, email, password, role_name, user_role_connecte):
     """
     Create a new user in the database.
     Returns True if the user is created or False.
     """
+    if user_role_connecte != "Gestion":
+        return False
+
     session = Session()
     password_hash = hash_password(password)
 
@@ -53,11 +56,15 @@ def get_all_users():
     return users
 
 
-def update_user(username, new_role):
+def update_user(username, new_role, user_role_connecte):
     """
     Update the role of an existing user.
     Returns True if the update is successful, False if the user is not found.
     """
+
+    if user_role_connecte != "Gestion":
+        return False
+
     session = Session()
     user = session.query(User).filter_by(username=username).first()
 
@@ -74,11 +81,14 @@ def update_user(username, new_role):
     return False
 
 
-def delete_user(username):
+def delete_user(username, user_role_connecte):
     """
     Delete a user from the database using their username.
     Returns True if deleted, False if not found.
     """
+    if user_role_connecte != "Gestion":
+        return False
+
     session = Session()
     user = session.query(User).filter_by(username=username).first()
 

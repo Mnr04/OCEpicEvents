@@ -44,7 +44,7 @@ def create(ctx, nom, email, tel, entreprise):
         )
         return
 
-    if create_client(nom, email, tel, entreprise, user.get('user_id')):
+    if create_client(nom, email, tel, entreprise, user.get('user_id'), user.get('role')):
         click.secho(" Client créé avec succès !", fg="green")
     else:
         click.secho(" Erreur lors de la création.", fg="red")

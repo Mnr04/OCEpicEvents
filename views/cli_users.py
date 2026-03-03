@@ -38,7 +38,7 @@ def create(ctx, nom, email, password, role):
         )
         return
 
-    if create_user(nom, email, password, role):
+    if create_user(nom, email, password, role, user.get('role')):
         click.secho(
             f" L'utilisateur {nom} a été créé avec succès !",
             fg="green"
@@ -75,7 +75,7 @@ def update(ctx, nom, role):
         click.secho(" Accès refusé.", fg="red")
         return
 
-    if update_user(nom, role):
+    if update_user(nom, role, user.get('role')):
         click.secho(" Rôle mis à jour !", fg="green")
     else:
         click.secho(" Erreur : Utilisateur introuvable.", fg="red")
@@ -91,7 +91,7 @@ def delete(ctx, nom):
         return
 
     if click.confirm(f"Êtes-vous sûr de vouloir supprimer {nom} ?"):
-        if delete_user(nom):
+        if delete_user(nom, user.get('role')):
             click.secho(" Utilisateur supprimé.", fg="green")
         else:
             click.secho(" Erreur : Utilisateur introuvable.", fg="red")
