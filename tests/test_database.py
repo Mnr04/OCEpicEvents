@@ -83,7 +83,9 @@ def test_crud_clients():
     delete_user("commercial_01", "Gestion")
 
     # Create commercial
-    create_user("commercial_01", "commercial@test.com", "123", "Commercial", "Gestion")
+    create_user(
+        "commercial_01", "commercial@test.com", "123", "Commercial", "Gestion"
+        )
     session = Session()
     commercial = session.query(User).filter_by(
         username="commercial_01").first()
@@ -91,7 +93,12 @@ def test_crud_clients():
 
     # Create Client
     resultat = create_client(
-        "Client_Test", "client@test.com", "123", "societe_01", commercial.id, "Commercial"
+        "Client_Test",
+        "client@test.com",
+        "123",
+        "societe_01",
+        commercial.id,
+        "Commercial"
         )
     assert resultat is True
 
@@ -102,7 +109,10 @@ def test_crud_clients():
 
     #  UPDATE
     update = update_client(
-        "Client_Test", commercial.id, "Commercial", nouvelle_entreprise="Nouvelle Entreprise"
+        "Client_Test",
+        commercial.id,
+        "Commercial",
+        nouvelle_entreprise="Nouvelle Entreprise"
         )
     assert update is True
 
@@ -112,7 +122,9 @@ def test_crud_clients():
     assert client_modifie.company_name == "Nouvelle Entreprise"
 
     # Sécurity other commercial id dont update other client
-    update = update_client("Client_Test", 18, "Commercial", nouvelle_entreprise="society_02")
+    update = update_client(
+        "Client_Test", 18, "Commercial", nouvelle_entreprise="society_02"
+        )
     assert update is False
     session.close()
 
@@ -131,7 +143,13 @@ def test_crud_contracts():
 
     delete_user("commercial_01", "Gestion")
     # Création d'un commercial
-    create_user("commercial_01", "commercial_01@test.com", "123", "Commercial", "Gestion")
+    create_user(
+        "commercial_01",
+        "commercial_01@test.com",
+        "123",
+        "Commercial",
+        "Gestion"
+        )
 
     session = Session()
     commercial = session.query(User).filter_by(

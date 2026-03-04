@@ -21,7 +21,9 @@ def test_crud_events():
     delete_user("comercial_01", "Gestion")
     delete_user("support_01", "Gestion")
 
-    create_user("comercial_01", "c01@event.com", "123", "Commercial", "Gestion")
+    create_user(
+        "comercial_01", "c01@event.com", "123", "Commercial", "Gestion"
+        )
     create_user("support_01", "s01@event.com", "123", "Support", "Gestion")
 
     session = Session()
@@ -30,7 +32,9 @@ def test_crud_events():
     session.close()
 
     # commercial crée un client
-    create_client("Client_Event", "c01@cli.com", "00", "Boite", comm_id, "Commercial")
+    create_client(
+        "Client_Event", "c01@cli.com", "00", "Boite", comm_id, "Commercial"
+        )
     session = Session()
     client_id = (
         session.query(Client).filter_by(full_name="Client_Event").first().id

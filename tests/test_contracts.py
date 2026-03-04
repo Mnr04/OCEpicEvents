@@ -13,13 +13,22 @@ def test_contract_filters():
     delete_user("Commercial_01", "Gestion")
 
     # On crée un commercial et un client
-    create_user("Commercial_01", "c01@test.com", "123", "Commercial", "Gestion")
+    create_user(
+        "Commercial_01", "c01@test.com", "123", "Commercial", "Gestion"
+        )
     session = Session()
     comm_id = session.query(User).filter_by(
         username="Commercial_01").first().id
     session.close()
 
-    create_client("Client_01", "c01@filtre.com", "000", "Societe_1", comm_id, "Commercial")
+    create_client(
+        "Client_01",
+        "c01@filtre.com",
+        "000",
+        "Societe_1",
+        comm_id,
+        "Commercial"
+        )
     session = Session()
     client_id = session.query(Client).filter_by(
         full_name="Client_01").first().id
