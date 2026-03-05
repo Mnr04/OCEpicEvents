@@ -103,20 +103,26 @@ def list_contracts(ctx, filtre):
     default=None
 )
 @click.option(
+    '--reste',
+    type=float,
+    help='Nouveau reste à payer (Gestion uniquement).',
+    default=None
+)
+@click.option(
     '--signe',
     is_flag=True,
     help='Passer le statut du contrat à SIGNÉ.'
 )
 @click.pass_context
-def update(ctx, contract_id, montant, signe):
+def update(ctx, contract_id, montant, reste, signe):
     user = ctx.obj
     if not user:
         click.secho(" Vous devez être connecté.", fg="red")
         return
 
-    if montant is None and not signe:
+    if montant is None and reste is None and not signe:
         click.secho(
-            "Spécifier une modification (--montant ou --signe).", fg="yellow"
+            " Modification (--montant, --reste ou --signe).", fg="yellow"
             )
         return
 
@@ -127,7 +133,8 @@ def update(ctx, contract_id, montant, signe):
         user.get('role'),
         user.get('user_id'),
         nouveau_statut=nouveau_statut,
-        nouveau_montant=montant
+        nouveau_montant=montant,
+        nouveau_reste=reste
     ):
         click.secho(" Contrat mis à jour avec succès !", fg="green")
     else:

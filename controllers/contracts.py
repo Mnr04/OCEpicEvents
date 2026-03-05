@@ -37,13 +37,14 @@ def update_contract(
         user_role,
         user_id,
         nouveau_statut=None,
-        nouveau_montant=None
+        nouveau_montant=None,
+        nouveau_reste=None
         ):
     """
     Update a contract.
-    'Gestion' can change the total amount. 'Commercial' can sign the contracts.
+    'Gestion' can change the total amount and the remaining amount.
+    'Commercial' can sign the contracts.
     """
-    # ...
     session = Session()
     contrat = session.query(Contract).filter_by(id=contract_id).first()
 
@@ -52,14 +53,18 @@ def update_contract(
         return False
 
     if user_role == "Gestion":
-        if nouveau_montant:
+        if nouveau_montant is not None:
             contrat.total_amount = nouveau_montant
+
+        if nouveau_reste is not None:
+            contrat.remaining_amount = nouveau_reste
+
         if nouveau_statut is not None:
             contrat.status = nouveau_statut
             if nouveau_statut is True:
                 sentry_sdk.capture_message(
                     f"Contrat signé : {contract_id}", level="info"
-                    )
+                )
 
         session.commit()
         session.close()
@@ -76,7 +81,7 @@ def update_contract(
             if nouveau_statut is True:
                 sentry_sdk.capture_message(
                     f"Contrat signé : {contract_id}", level="info"
-                    )
+                )
 
             session.close()
             return True
